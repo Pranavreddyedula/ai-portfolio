@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Multi Demo</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial;
+      padding: 20px;
+    }
+    select, textarea {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      background: #111;
+      color: white;
+      border: none;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #00f7ff;
+      border: none;
+      cursor: pointer;
+    }
+    .output {
+      margin-top: 20px;
+      background: #111;
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>AI Multi-Project Demo 🚀</h1>
+
+<label>Select AI Task:</label>
+<select id="task">
+  <option value="support">Customer Support</option>
+  <option value="extract">Data Extraction</option>
+  <option value="summary">Summarization</option>
+</select>
+
+<textarea id="input" placeholder="Enter your input..."></textarea>
+
+<button onclick="runAI()">Generate</button>
+
+<div class="output" id="output"></div>
+
+<script>
+async function runAI() {
+  const input = document.getElementById("input").value;
+  const task = document.getElementById("task").value;
+
+  let systemPrompt = "";
+
+  if (task === "support") {
+    systemPrompt = "You are a professional customer support agent. Respond politely and clearly.";
+  } 
+  else if (task === "extract") {
+    systemPrompt = "Extract key details and return in JSON format.";
+  } 
+  else if (task === "summary") {
+    systemPrompt = "Summarize the text into 3 bullet points.";
+  }
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer YOUR_API_KEY"
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: input }
+      ]
+    })
+  });
+
+  const data = await response.json();
+
+  document.getElementById("output").innerText =
+    data.choices[0].message.content;
+}
+</script>
+
+</body>
+</html>
